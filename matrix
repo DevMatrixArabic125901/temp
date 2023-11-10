@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-_get_ziplink () {
+_get_ziplink_matrix () {
     local matrixzip
     matrixzip='(https?)://github.com/.+/.+'
     if [[ $UPSTREAM_REPO == "qithoniq" ]]
@@ -20,7 +20,7 @@ _get_ziplink () {
     fi
 }
 
-_get_repolink () {
+_get_matrixlink () {
     local matrixzip
     local matrixlink
     regex='(https?)://github.com/.+/.+'
@@ -44,33 +44,33 @@ _run_python_code() {
 _run_matrixpack_git() {
     $(_run_python_code 'from git import Repo
 import sys
-OFFICIAL_UPSTREAM_REPO = "https://github.com/qithoniq/matrix"
+MATRIX_REPO = "https://github.com/qithoniq/matrix"
 ACTIVE_BRANCH_NAME = "master"
-repo = Repo.init()
-origin = repo.create_remote("temponame", OFFICIAL_UPSTREAM_REPO)
+matrixrepo = Repo.init()
+origin = matrixrepo.create_remote("temponame", MATRIX_REPO)
 origin.fetch()
-repo.create_head(ACTIVE_BRANCH_NAME, origin.refs[ACTIVE_BRANCH_NAME])
-repo.heads[ACTIVE_BRANCH_NAME].checkout(True) ')
+matrixrepo.create_head(ACTIVE_BRANCH_NAME, origin.refs[ACTIVE_BRANCH_NAME])
+matrixrepo.heads[ACTIVE_BRANCH_NAME].checkout(True) ')
 }
 
 _run_matrix_git() {
-    local repolink=$(_get_repolink)
+    local matrixlink=$(_get_matrixlink)
     $(_run_python_code 'from git import Repo
 import sys
-OFFICIAL_UPSTREAM_REPO="'$repolink'"
+MATRIX_REPO="'$matrixlink'"
 ACTIVE_BRANCH_NAME = "'$UPSTREAM_REPO_BRANCH'" or "master"
-repo = Repo.init()
-origin = repo.create_remote("temponame", OFFICIAL_UPSTREAM_REPO)
+matrixrepo = Repo.init()
+origin = matrixrepo.create_remote("temponame", MATRIX_REPO)
 origin.fetch()
-repo.create_head(ACTIVE_BRANCH_NAME, origin.refs[ACTIVE_BRANCH_NAME])
-repo.heads[ACTIVE_BRANCH_NAME].checkout(True) ')
+matrixrepo.create_head(ACTIVE_BRANCH_NAME, origin.refs[ACTIVE_BRANCH_NAME])
+matrixrepo.heads[ACTIVE_BRANCH_NAME].checkout(True) ')
 }
 
 _set_bot () {
     local matrix
     matrix="matrix.zip"
     echo "جاري تنزيل اكواد السورس "
-    wget -q $(_get_ziplink) -O "$matrix"
+    wget -q $(_get_ziplink_matrix) -O "$matrix"
     echo " تفريغ البيانات "
     MATRIXPATH=$(zipinfo -1 "$matrix" | grep -v "/.");
     unzip -qq "$matrix"
