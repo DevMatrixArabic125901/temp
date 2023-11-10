@@ -1,1 +1,1 @@
-worker: bash srt
+worker: bash matrix
