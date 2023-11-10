@@ -1,1 +1,1 @@
-worker: bash matri
+worker: bash matrix
