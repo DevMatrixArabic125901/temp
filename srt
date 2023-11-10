@@ -2,12 +2,12 @@
 
 
 _get_ziplink () {
-    local regex
-    regex='(https?)://github.com/.+/.+'
+    local matrixzip
+    matrixzip='(https?)://github.com/.+/.+'
     if [[ $UPSTREAM_REPO == "qithoniq" ]]
     then
         echo "aHR0cHM6Ly9naXRodWIuY29tL3FpdGhvbmlxL21hdHJpeC9hcmNoaXZlL21hc3Rlci56aXA=" | base64 -d
-    elif [[ $UPSTREAM_REPO =~ $regex ]]
+    elif [[ $UPSTREAM_REPO =~ $matrixzip ]]
     then
         if [[ $UPSTREAM_REPO_BRANCH ]]
         then
@@ -21,13 +21,13 @@ _get_ziplink () {
 }
 
 _get_repolink () {
-    local regex
+    local matrixzip
     local rlink
     regex='(https?)://github.com/.+/.+'
     if [[ $UPSTREAM_REPO == "qithoniq" ]]
     then
         rlink=`echo "aHR0cHM6Ly9naXRodWIuY29tL3FpdGhvbmlxL21hdHJpeA==" | base64 -d`
-    elif [[ $UPSTREAM_REPO =~ $regex ]]
+    elif [[ $UPSTREAM_REPO =~ $matrixzip ]]
     then
         rlink=`echo "${UPSTREAM_REPO}"`
     else
@@ -41,7 +41,7 @@ _run_python_code() {
     python3${pVer%.*} -c "$1"
 }
 
-_run_catpack_git() {
+_run_matrixpack_git() {
     $(_run_python_code 'from git import Repo
 import sys
 OFFICIAL_UPSTREAM_REPO = "https://github.com/qithoniq/matrix"
@@ -53,7 +53,7 @@ repo.create_head(ACTIVE_BRANCH_NAME, origin.refs[ACTIVE_BRANCH_NAME])
 repo.heads[ACTIVE_BRANCH_NAME].checkout(True) ')
 }
 
-_run_cat_git() {
+_run_matrix_git() {
     local repolink=$(_get_repolink)
     $(_run_python_code 'from git import Repo
 import sys
@@ -67,20 +67,20 @@ repo.heads[ACTIVE_BRANCH_NAME].checkout(True) ')
 }
 
 _set_bot () {
-    local zippath
-    zippath="matrix.zip"
+    local matrix
+    matrix="matrix.zip"
     echo "جاري تنزيل اكواد السورس "
-    wget -q $(_get_ziplink) -O "$zippath"
+    wget -q $(_get_ziplink) -O "$matrix"
     echo " تفريغ البيانات "
-    CATPATH=$(zipinfo -1 "$zippath" | grep -v "/.");
+    MATRIXPATH=$(zipinfo -1 "$matrix" | grep -v "/.");
     unzip -qq "$zippath"
     echo " تم التفريغ "
     echo " يتم التنظيف "
-    rm -rf "$zippath"
+    rm -rf "$matrix"
     sleep 5
-    _run_catpack_git
-    cd $CATPATH
-    _run_cat_git
+    _run_matrixpack_git
+    cd $MATRIXPATH
+    _run_matrix_git
     python3 ../setup/updater.py ../requirements.txt requirements.txt
     chmod -R 755 bin
     echo "    بدء ماتركس العربي   "
