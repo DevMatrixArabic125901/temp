@@ -13,7 +13,7 @@ _get_ziplink () {
         then
             echo "${UPSTREAM_REPO}/archive/${UPSTREAM_REPO_BRANCH}.zip"
         else
-            echo "${UPSTREAM_REPO}/archive/master.zip"
+            echo "${UPSTREAM_REPO}/archive/matrix.zip"
         fi
     else
         echo "aHR0cHM6Ly9naXRodWIuY29tL3FpdGhvbmlxL21hdHJpeC9hcmNoaXZlL21hc3Rlci56aXA=" | base64 -d
@@ -22,18 +22,18 @@ _get_ziplink () {
 
 _get_repolink () {
     local matrixzip
-    local rlink
+    local matrixlink
     regex='(https?)://github.com/.+/.+'
     if [[ $UPSTREAM_REPO == "qithoniq" ]]
     then
-        rlink=`echo "aHR0cHM6Ly9naXRodWIuY29tL3FpdGhvbmlxL21hdHJpeA==" | base64 -d`
+        matrixlink=`echo "aHR0cHM6Ly9naXRodWIuY29tL3FpdGhvbmlxL21hdHJpeA==" | base64 -d`
     elif [[ $UPSTREAM_REPO =~ $matrixzip ]]
     then
-        rlink=`echo "${UPSTREAM_REPO}"`
+        matrixlink=`echo "${UPSTREAM_REPO}"`
     else
-        rlink=`echo "aHR0cHM6Ly9naXRodWIuY29tL3FpdGhvbmlxL21hdHJpeA==" | base64 -d`
+        matrixlink=`echo "aHR0cHM6Ly9naXRodWIuY29tL3FpdGhvbmlxL21hdHJpeA==" | base64 -d`
     fi
-    echo "$rlink"
+    echo "$matrixlink"
 }
 
 
@@ -73,7 +73,7 @@ _set_bot () {
     wget -q $(_get_ziplink) -O "$matrix"
     echo " تفريغ البيانات "
     MATRIXPATH=$(zipinfo -1 "$matrix" | grep -v "/.");
-    unzip -qq "$zippath"
+    unzip -qq "$matrix"
     echo " تم التفريغ "
     echo " يتم التنظيف "
     rm -rf "$matrix"
